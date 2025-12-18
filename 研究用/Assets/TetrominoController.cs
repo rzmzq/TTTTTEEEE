@@ -53,17 +53,15 @@ public class TetrominoController : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = block.position + dir;
+            Vector2 pos = (Vector2)(transform.position + block.localPosition + dir);
 
             if (!GridManager.IsInsideGrid(pos))
             {
-                Debug.Log("Outside Grid: " + pos);
                 return false;
             }
 
             if (!GridManager.IsCellEmpty(pos))
             {
-                Debug.Log("Cell Not Empty: " + pos);
                 return false;
             }
         }
@@ -74,10 +72,7 @@ public class TetrominoController : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = new Vector2(
-                Mathf.Round(block.position.x),
-                Mathf.Round(block.position.y)
-            );
+            Vector2 pos = (Vector2)(transform.position + block.localPosition);
 
             if (pos.y >= GridManager.height)
                 continue;

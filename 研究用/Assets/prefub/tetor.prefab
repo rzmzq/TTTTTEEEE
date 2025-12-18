@@ -309,7 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97dcadba30be61448bfb28e7638801c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallInterval: 5
+  fallInterval: 1
   lockDelay: 0.5
 --- !u!1 &9144639754510873494
 GameObject:
@@ -397,4 +397,4 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
