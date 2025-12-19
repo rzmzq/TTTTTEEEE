@@ -5,38 +5,70 @@ public class TetrominoController : MonoBehaviour
     public float fallInterval = 1.0f;
     public float lockDelay = 0.5f;
 
-    private float fallTimer = 0f;
-    private float lockTimer = 0f;
-    private bool isGrounded = false;
+    float fallTimer;
+    float lockTimer;
+    bool isGrounded;
 
     void Update()
     {
+        HandleInput();
+        HandleFall();
+        HandleLock();
+    }
+
+    void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Debug.Log("yControllerzLeftƒL[“ü—Í");
+            TryMove(Vector3.left);
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Debug.Log("yControllerzRightƒL[“ü—Í");
+            TryMove(Vector3.right);
+        }
+    }
+
+
+    void HandleFall()
+    {
         fallTimer += Time.deltaTime;
 
-        if (fallTimer >= fallInterval)
-        {
-            fallTimer = 0f;
+        if (fallTimer < fallInterval) return;
 
-            if (CanMove(Vector3.down))
-            {
-                Move(Vector3.down);
-                isGrounded = false;
-                lockTimer = 0f;
-            }
-            else
-            {
-                isGrounded = true;
-            }
-        }
+        fallTimer = 0f;
 
-        if (isGrounded)
+        if (CanMove(Vector3.down))
         {
-            lockTimer += Time.deltaTime;
-            if (lockTimer >= lockDelay)
-            {
-                LockTetromino();
-            }
+            Move(Vector3.down);
+            isGrounded = false;
+            lockTimer = 0f;
         }
+        else
+        {
+            isGrounded = true;
+        }
+    }
+
+    void HandleLock()
+    {
+        if (!isGrounded) return;
+
+        lockTimer += Time.deltaTime;
+
+        if (lockTimer >= lockDelay)
+            LockTetromino();
+    }
+
+    void TryMove(Vector3 dir)
+    {
+        if (!CanMove(dir)) return;
+
+        Move(dir);
+        isGrounded = false;
+        lockTimer = 0f;
     }
 
     void Move(Vector3 dir)
@@ -53,17 +85,10 @@ public class TetrominoController : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = (Vector2)(transform.position + block.localPosition + dir);
+            Vector2 nextPos = (Vector2)block.position + (Vector2)dir;
 
-            if (!GridManager.IsInsideGrid(pos))
-            {
+            if (!GridManager.IsCellEmpty(nextPos))
                 return false;
-            }
-
-            if (!GridManager.IsCellEmpty(pos))
-            {
-                return false;
-            }
         }
         return true;
     }
@@ -72,12 +97,14 @@ public class TetrominoController : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = (Vector2)(transform.position + block.localPosition);
+            Vector2 pos = block.position;
+            int x = Mathf.RoundToInt(pos.x);
+            int y = Mathf.RoundToInt(pos.y);
 
-            if (pos.y >= GridManager.height)
-                continue;
+            if (x < 0 || x >= GridManager.width) continue;
+            if (y < 0 || y >= GridManager.height) continue;
 
-            GridManager.grid[(int)pos.x, (int)pos.y] = block;
+            GridManager.grid[x, y] = block;
         }
 
         FindObjectOfType<TetrominoSpawner>().OnTetrominoLocked();
