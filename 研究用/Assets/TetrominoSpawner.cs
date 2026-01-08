@@ -36,11 +36,17 @@ public class TetrominoSpawner : MonoBehaviour
         int index = Random.Range(0, tetrominoPrefabs.Length);
         Debug.Log("【Spawner】Spawn index = " + index);
 
-        Instantiate(
+        GameObject tetromino = Instantiate(
             tetrominoPrefabs[index],
             spawnPoint.position,
             Quaternion.identity
         );
+
+        // ★ 左右移動スクリプトを追加
+        if (tetromino.GetComponent<TetrominoMove>() == null)
+        {
+            tetromino.AddComponent<TetrominoMove>();
+        }
 
         hasActiveTetromino = true;
         Debug.Log("【Spawner】スポーン完了");
